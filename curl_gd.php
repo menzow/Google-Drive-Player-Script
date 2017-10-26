@@ -141,6 +141,7 @@ function PosterImg($url) {
 function get_drive_id($string) {
     $matches = [];
     preg_match("/[-\w]{25,}/", $string, $matches);
+    var_dump($matches, $string);
     if(count($matches) > 0) {
         return $matches[0];
     }

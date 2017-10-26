@@ -7,16 +7,18 @@
 	if(isset($_POST['submit']) && $_POST['submit'] != ""){
 		$url = $_POST['url'];
 		$gid = get_drive_id($url);
+		if(!$gid) {
+			die('GID not found');
+		}
+		$backup = 'https://drive.google.com/file/d/'.$gid.'/preview';
 		$iframeid = my_simple_crypt($gid);
 		$filename = slugify($iframeid) . '.mp4';
 		$poster_filename = $filename . '.png';
 		$posterimg = './cache/' . $poster_filename;
-
 		if(!file_exists($posterimg)) {
 			$posterurl = PosterImg($backup);
 			download($poster_filename, $posterurl);
 		}
-		$backup = 'https://drive.google.com/file/d/'.$gid.'/preview';
 		
 		if(!file_exists('./cache/' . $filename)) {
 			$linkdown = Drive($url);

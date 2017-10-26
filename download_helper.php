@@ -45,6 +45,7 @@ function download($filename, $url) {
 
 		if($response === false) {
 		    // Update as of PHP 5.3 use of Namespaces Exception() becomes \Exception()
+		    unlink($path);
 		    throw new \Exception('Curl error: ' . curl_error($curl));
 		}
 	}
