@@ -1,6 +1,7 @@
 <?php
 	error_reporting(0);
 	include "curl_gd.php";
+	include "download_helper.php";
 
 	if($_POST['submit'] != ""){
 		$url = $_POST['url'];
@@ -9,7 +10,9 @@
 		$backup = 'https://drive.google.com/file/d/'.$gid.'/preview';
 		$posterimg = PosterImg($backup);
 		$linkdown = Drive($url);
-		$file = '[{"type": "video/mp4", "label": "HD", "file": "'.$linkdown.'"}]';
+		$filename = slugify($iframeid) . '.mp4';
+		download($filename, $linkdown);
+		$file = '[{"type": "video/mp4", "label": "HD", "src": "./cache/'.$filename.'"}]';
 	}
 ?>
 <!doctype html>
@@ -17,17 +20,18 @@
 <head>
   <meta charset="utf-8" />
 	<title>Embed google drive generator</title>
-</head>
-<body>
-
-  <!-- Docs styles -->
-  <link rel="stylesheet" href="https://cdn.plyr.io/2.0.13/demo.css">
+	<link rel="stylesheet" type="text/css" href="./bower_components/plyr/dist/plyr.css">
 	<style>
 		.container {
 		  max-width: 800px;
 		  margin: 0 auto;
 		}
 	</style>
+</head>
+<body>
+
+  <!-- Docs styles -->
+	
 
 	<div class="container">
 		<br />
@@ -38,21 +42,24 @@
 		<br/>
 
 		<div id="myElement">Paste the url and click the get button.</div>
+		<video class="js-player" controls>
+		</video>
 
 		<div><?php if($iframeid){echo '<textarea style="margin:10px;width: 97%;height: 80px;">&lt;iframe src="embed.php?url='.$iframeid.'" width="640" height="360" frameborder="0" scrolling="no" allowfullscreen&gt;&lt;/iframe&gt;</textarea>';}?></div>
 
 	</div>
 
-	<script src="https://content.jwplatform.com/libraries/DbXZPMBQ.js"></script>
-	<script type="text/javascript">
-		jwplayer("myElement").setup({
-			playlist: [{
-				"image": "<?php echo $posterimg; ?>",
-				"sources":<?php echo $file?>
-			}],
-			allowfullscreen: true,
-			width: '100%',
-			aspectratio: '16:9',
+	<script type="text/javascript" src="./bower_components/plyr/dist/plyr.js"></script>
+	<script>
+		var players = plyr.setup(document.querySelector('.js-player'), {
+			iconUrl: "./bower_components/plyr/dist/plyr.svg"
+		});
+		var player = players[0];
+		player.source({
+			type:       'video',
+			title:      'Embed Video',
+			sources:	<?php echo $file; ?>,
+			poster:		'<?php echo $posterimg; ?>'
 		});
 	</script>
 
