@@ -2,8 +2,9 @@
 	error_reporting(0);
 	include "curl_gd.php";
 	include "download_helper.php";
+	$file = null;
 
-	if($_POST['submit'] != ""){
+	if(isset($_POST['submit']) && $_POST['submit'] != ""){
 		$url = $_POST['url'];
 		$gid = get_drive_id($url);
 		$iframeid = my_simple_crypt($gid);
@@ -36,32 +37,27 @@
 	<div class="container">
 		<br />
 		<form action="" method="POST">
-			<input type="text" size="80" name="url" value="https://drive.google.com/file/d/0ByaRd0R0Qyatcmw2dVhQS0NDU0U/view"/>
+			<input type="text" size="80" name="url" placeholder="https://drive.google.com/file/d/0ByaRd0R0Qyatcmw2dVhQS0NDU0U/view"/>
 			<input type="submit" value="GET" name="submit" />
 		</form>
 		<br/>
 
-		<div id="myElement">Paste the url and click the get button.</div>
-		<video class="js-player" controls>
-		</video>
-
-		<div><?php if($iframeid){echo '<textarea style="margin:10px;width: 97%;height: 80px;">&lt;iframe src="embed.php?url='.$iframeid.'" width="640" height="360" frameborder="0" scrolling="no" allowfullscreen&gt;&lt;/iframe&gt;</textarea>';}?></div>
-
+		<?php if(!is_null($file)): ?>
+			<video class="js-player" controls></video>
+			<script type="text/javascript" src="./bower_components/plyr/dist/plyr.js"></script>
+			<script>
+				var players = plyr.setup(document.querySelector('.js-player'), {
+					iconUrl: "./bower_components/plyr/dist/plyr.svg"
+				});
+				var player = players[0];
+				player.source({
+					type:       'video',
+					title:      'Embed Video',
+					sources:	<?php echo $file; ?>,
+					poster:		'<?php echo $posterimg; ?>'
+				});
+			</script>
+		<?php endif; ?>
 	</div>
-
-	<script type="text/javascript" src="./bower_components/plyr/dist/plyr.js"></script>
-	<script>
-		var players = plyr.setup(document.querySelector('.js-player'), {
-			iconUrl: "./bower_components/plyr/dist/plyr.svg"
-		});
-		var player = players[0];
-		player.source({
-			type:       'video',
-			title:      'Embed Video',
-			sources:	<?php echo $file; ?>,
-			poster:		'<?php echo $posterimg; ?>'
-		});
-	</script>
-
 </body>
 </html>
