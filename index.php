@@ -1,5 +1,4 @@
 <?php
-	error_reporting(0);
 	include "curl_gd.php";
 	include "download_helper.php";
 	$file = null;
