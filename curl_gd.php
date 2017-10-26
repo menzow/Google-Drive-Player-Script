@@ -139,25 +139,12 @@ function PosterImg($url) {
 }
 
 function get_drive_id($string) {
-  if (strpos($string, "/edit")) {
-    $string = str_replace("/edit", "/view", $string);
-  } else if (strpos($string, "?id=")) {
-    $parts = parse_url($string);
-    parse_str($parts['query'], $query);
-    return $query['id'];
-  } else if (!strpos($string, "/view")) {
-    $string = $string . "/view";
-  }
-  $start  = "file/d/";
-  $end    = "/view";
-  $string = " " . $string;
-  $ini    = strpos($string, $start);
-  if ($ini == 0) {
-    return "";
-  }
-  $ini += strlen($start);
-  $len = strpos($string, $end, $ini) - $ini;
-  return substr($string, $ini, $len);
+    $matches = [];
+    preg_match("/[-\w]{25,}/", $string, $matches);
+    if(count($matches) > 0) {
+        return $matches[0];
+    }
+    return null;
 }
 
 function file_get_contents_curl($url) {
